@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OSSimulator.Pages;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,8 +14,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x804 上介绍了“空白页”项模板
-
 namespace OSSimulator
 {
     /// <summary>
@@ -25,6 +24,40 @@ namespace OSSimulator
         public MainPage()
         {
             this.InitializeComponent();
+        }
+
+        private void Star_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+
+        }
+
+        private void Mail_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+
+        }
+
+        private void Nvview_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
+        {
+            FrameNavigationOptions options = new FrameNavigationOptions
+            {
+                TransitionInfoOverride = args.RecommendedNavigationTransitionInfo,
+                IsNavigationStackEnabled = false
+            };
+            Type pageType = null;
+            var itemContainer = args.InvokedItemContainer;
+            if (args.IsSettingsInvoked)
+            {
+                pageType = typeof(SettingsPage);
+            }
+            else if (itemContainer == PS)
+            {
+                pageType = typeof(PSPage);
+            }
+            else if (itemContainer == MMU)
+            {
+                pageType = typeof(MMUPage);
+            }
+            contentFrame.NavigateToType(pageType, null, options);
         }
     }
 }

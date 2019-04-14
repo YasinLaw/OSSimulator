@@ -1,0 +1,23 @@
+﻿<Page
+    x:Class="OSSimulator.Pages.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:OSSimulator.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <PersonPicture x:Name="Person" Grid.Row="0" ProfilePicture="https://upload.jianshu.io/users/upload_avatars/14991910/a99df0cd-df86-4fb2-a905-91fdc3efff64?imageMogr2/auto-orient/strip|imageView2/1/w/240/h/240"/>
+            <NavigationViewItemSeparator/>
+            <TextBlock HorizontalAlignment="Center" Text="Yangxin Luo" FontWeight="ExtraBold" FontSize="20" FontFamily="Arial"/>
+            <TextBlock HorizontalAlignment="Center" Text="in" FontWeight="ExtraBold" FontSize="20" FontFamily="Arial"/>
+            <TextBlock HorizontalAlignment="Center" Text="Hunan Normal University" FontWeight="ExtraBold" FontSize="20" FontFamily="Arial"/>
+            <TextBlock HorizontalAlignment="Center" Text="(2019)" FontWeight="ExtraBold" FontSize="20" FontFamily="Arial"/>
+        </StackPanel>
+        
+
+    </Grid>
+</Page>
