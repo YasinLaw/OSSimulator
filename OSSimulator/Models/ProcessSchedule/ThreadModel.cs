@@ -55,7 +55,7 @@ namespace OSSimulator.Models.ProcessSchedule
             }
         }
 
-        private long value;
+        private long value = 0;
 
         public long Value
         {

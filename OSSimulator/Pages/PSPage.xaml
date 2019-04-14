@@ -5,10 +5,63 @@
     xmlns:local="using:OSSimulator.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="3*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <ListView>
+                    <controls:DataGrid x:Name="ThreadsDataGrid" ItemsSource="{x:Bind ThreadCollection.Threads}"/>
+                </ListView>
+            </Grid>
+            <Grid Grid.Row="1">
+                <ListView x:Name="ProgressBars" ItemsSource="{x:Bind ThreadCollection.Threads}" HorizontalAlignment="Stretch">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Height="50" HorizontalAlignment="Stretch">
+                                <StackPanel HorizontalAlignment="Stretch">
+                                    <TextBlock Text="{Binding Pid}" HorizontalAlignment="Stretch"/>
+                                    <ProgressBar Value="{Binding Value}" Maximum="{Binding Time}" HorizontalAlignment="Center" Width="800"/>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </Grid>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="5*"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="1">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <RadioButton Checked="Priority_Checked" Content="Priority Scheduling"/>
+                    <RadioButton Checked="RoundRobin_Checked" Content="Round Robin Scheduling"/>
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Row="0">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" Height="100">
+                        <Button x:Name="AddButton" Background="{ThemeResource ButtonBackgroundThemeBrush}" Content="ADD" Click="AddButton_Click"/>
+                        <Button x:Name="DelButton" Background="{ThemeResource ButtonBackgroundThemeBrush}" Content="DEL" Click="DelButton_Click"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Height="100">
+                        <Button x:Name="RunButton" Background="{ThemeResource ButtonBackgroundThemeBrush}" Content="RUN" Click="RunButton_Click"/>
+                        <Button x:Name="BlockButton" Background="{ThemeResource ButtonBackgroundThemeBrush}" Content="BLK" Click="BlockButton_Click"/>
+                    </StackPanel>
+                    </StackPanel>
+            </Grid>
+        </Grid>
     </Grid>
 </Page>

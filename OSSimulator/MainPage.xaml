@@ -9,7 +9,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <NavigationView x:Name="nvview" PaneTitle="OS Simulator" ItemInvoked="Nvview_ItemInvoked" SelectionFollowsFocus="Enabled" AlwaysShowHeader="False">
+        <NavigationView x:Name="nvview" PaneTitle="OS Simulator" ItemInvoked="Nvview_ItemInvoked" SelectionFollowsFocus="Enabled" AlwaysShowHeader="False" IsBackButtonVisible="Collapsed">
             <NavigationView.MenuItems>
                 <NavigationViewItem x:Name="PS" Icon="Play" Content="进程调度"/>
                 <NavigationViewItem x:Name="MMU" Icon="Save" Content="内存管理"/>
@@ -21,9 +21,9 @@
                 </StackPanel>
             </NavigationView.PaneFooter>
             <Frame x:Name="contentFrame">
-            <Frame.ContentTransitions>
-                <TransitionCollection/>
-            </Frame.ContentTransitions>
+                <Frame.ContentTransitions>
+                    <TransitionCollection/>
+                </Frame.ContentTransitions>
             </Frame>
         </NavigationView>
         
