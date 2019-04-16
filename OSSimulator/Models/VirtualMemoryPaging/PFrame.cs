@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace OSSimulator.Models.VirtualMemoryPaging
 {
-    public class PFrame
+    public class PFrame : INotifyPropertyChanged
     {
         public PFrame()
         {
@@ -15,6 +17,28 @@ namespace OSSimulator.Models.VirtualMemoryPaging
 
         public int Id { get; set; }
 
-        public VPage VPage { get; set; }
+        private VPage vPage;
+
+        public VPage VPage
+        {
+            get
+            {
+                return vPage;
+            }
+            set
+            {
+                vPage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int Occupied { get; set; } = 0;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged([CallerMemberName]string name = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
     }
 }

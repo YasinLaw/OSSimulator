@@ -16,7 +16,5 @@ namespace OSSimulator.Models.ProcessSchedule
         public List<ThreadModel> BlockedThreads { get; set; }
 
         public List<ThreadModel> Threads { get; set; }
-
-
     }
 }
