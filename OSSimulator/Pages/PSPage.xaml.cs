@@ -63,8 +63,8 @@ namespace OSSimulator.Pages
             var thread = ThreadCollection.Threads.FirstOrDefault();
             if (thread != null)
             {
-                //ThreadCollection.Threads.Remove(thread);
-                //ThreadCollection.BlockedThreads.Remove(thread);
+                ThreadCollection.Threads.Remove(thread);
+                ThreadCollection.BlockedThreads.Remove(thread);
             }
             ThreadsDataGrid.ItemsSource = null;
             ThreadsDataGrid.ItemsSource = ThreadCollection.Threads;
