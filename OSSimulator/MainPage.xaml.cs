@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using System.Threading.Tasks;
 
 namespace OSSimulator
 {
@@ -26,14 +27,14 @@ namespace OSSimulator
             this.InitializeComponent();
         }
 
-        private void Star_PointerReleased(object sender, PointerRoutedEventArgs e)
+        private async void Star_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-
+            await Windows.System.Launcher.LaunchUriAsync(new Uri("https://github.com/YasinLaw/OSSimulator"));
         }
 
-        private void Mail_PointerReleased(object sender, PointerRoutedEventArgs e)
+        private async void Mail_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-
+            await Windows.System.Launcher.LaunchUriAsync(new Uri("mailto:YasinLaw@outlook.com"));
         }
 
         private void Nvview_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
