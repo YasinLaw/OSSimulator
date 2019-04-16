@@ -46,8 +46,8 @@
             </Grid.RowDefinitions>
             <Grid Grid.Row="1">
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <RadioButton Checked="Priority_Checked" Content="Priority Scheduling"/>
-                    <RadioButton Checked="RoundRobin_Checked" Content="Round Robin Scheduling"/>
+                    <RadioButton x:Name="PrCk" Checked="Priority_Checked" Content="Priority Scheduling"/>
+                    <RadioButton x:Name="RrCk" Checked="RoundRobin_Checked" Content="Round Robin Scheduling"/>
                 </StackPanel>
             </Grid>
             <Grid Grid.Row="0">
