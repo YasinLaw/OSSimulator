@@ -16,22 +16,22 @@
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="2*"/>
-                <RowDefinition Height="3*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
                 <ListView>
-                    <controls:DataGrid x:Name="ThreadsDataGrid" ItemsSource="{x:Bind ThreadCollection.Threads}"/>
+                    <controls:DataGrid x:Name="ThreadsDataGrid" ItemsSource="{x:Bind ThreadCollection.Threads}" Width="700"/>
                 </ListView>
             </Grid>
             <Grid Grid.Row="1">
                 <ListView x:Name="ProgressBars" ItemsSource="{x:Bind ThreadCollection.Threads}" HorizontalAlignment="Stretch">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Grid Height="50" HorizontalAlignment="Stretch">
+                            <Grid Height="30" HorizontalAlignment="Stretch">
                                 <StackPanel HorizontalAlignment="Stretch">
                                     <TextBlock Text="{Binding Pid}" HorizontalAlignment="Stretch"/>
-                                    <ProgressBar Value="{Binding Value}" Maximum="{Binding Time}" HorizontalAlignment="Center" Width="800"/>
+                                    <ProgressBar Value="{Binding Value}" Maximum="{Binding Time}" HorizontalAlignment="Center" Width="700"/>
                                 </StackPanel>
                             </Grid>
                         </DataTemplate>

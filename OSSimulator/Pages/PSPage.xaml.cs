@@ -1,20 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using Microsoft.Toolkit.Uwp.UI.Controls;
 using OSSimulator.Models.ProcessSchedule;
-using System.Collections.Concurrent;
+using System.Linq;
+using System.Threading.Tasks;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“空白页”项模板
 
@@ -25,6 +14,8 @@ namespace OSSimulator.Pages
     /// </summary>
     public sealed partial class PSPage : Page
     {
+        public readonly object mutex = new object();
+
         public ThreadCollection ThreadCollection { get; set; }
 
         public bool IsPriority { get; set; }
@@ -32,6 +23,8 @@ namespace OSSimulator.Pages
         public int Count { get; set; } = 0;
 
         public Random Random { get; set; } = new Random();
+
+        public ThreadModel Current { get; set; }
 
         public PSPage()
         {
@@ -49,30 +42,119 @@ namespace OSSimulator.Pages
             IsPriority = false;
         }
 
-        private void AddButton_Click(object sender, RoutedEventArgs e)
+        private async void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            ThreadCollection.Threads.TryAdd(new ThreadModel
+            ThreadCollection.Threads.Add(new ThreadModel
             {
                 Pid = Count++,
-                Time = Random.Next(1000),
-                Priority = Random.Next(1000),
-                ProcState = ThreadModel.State.READY,
+                Priority = Random.Next(300),
+                Time = Random.Next(300),
+                ProcState = ThreadModel.State.READY
             });
+            ThreadsDataGrid.ItemsSource = null;
+            ThreadsDataGrid.ItemsSource = ThreadCollection.Threads;
+            ProgressBars.ItemsSource = null;
+            ProgressBars.ItemsSource = ThreadCollection.Threads;
         }
 
-        private void DelButton_Click(object sender, RoutedEventArgs e)
+        private async void DelButton_Click(object sender, RoutedEventArgs e)
         {
-            ThreadCollection.Threads.TryTake(out ThreadModel thread);
+            var thread = ThreadCollection.Threads.FirstOrDefault();
+            if (thread != null)
+            {
+                //ThreadCollection.Threads.Remove(thread);
+                //ThreadCollection.BlockedThreads.Remove(thread);
+            }
+            ThreadsDataGrid.ItemsSource = null;
+            ThreadsDataGrid.ItemsSource = ThreadCollection.Threads;
+            ProgressBars.ItemsSource = null;
+            ProgressBars.ItemsSource = ThreadCollection.Threads;
+            if (ThreadCollection.Threads.Count == 0)
+            {
+                Count = 0;
+            }
         }
 
-        private void RunButton_Click(object sender, RoutedEventArgs e)
+        private async void RunButton_Click(object sender, RoutedEventArgs e)
         {
-
+            RunButton.IsEnabled = false;
+            AddButton.IsEnabled = false;
+            DelButton.IsEnabled = false;
+            if (IsPriority)
+            {
+                await RunPrio();
+            }
+            else
+            {
+                await RunRR();
+            }
+            AddButton.IsEnabled = true;
+            DelButton.IsEnabled = true;
+            RunButton.IsEnabled = true;
         }
 
-        private void BlockButton_Click(object sender, RoutedEventArgs e)
+        private async Task RunPrio()
         {
+            if (ThreadCollection.BlockedThreads.Count != 0)
+            {
+                ThreadCollection.Threads.AddRange(ThreadCollection.BlockedThreads);
+                ThreadCollection.BlockedThreads.Clear();
+            }
+            foreach (var thread in ThreadCollection.Threads)
+            {
+                thread.ProcState = ThreadModel.State.READY;
+            }
+            while (ThreadCollection.Threads.Count != 0)
+            {
+                lock (mutex)
+                {
+                    ThreadCollection.Threads.Sort();
+                    Current = ThreadCollection.Threads.FirstOrDefault();
+                    if (Current.ProcState != ThreadModel.State.BLOCKED)
+                    {
+                        Current.ProcState = ThreadModel.State.RUNNING;
+                        Current.Priority -= 3;
+                        Current.Value++;
+                        if (Current.Value == Current.Time)
+                        {
+                            Current.ProcState = ThreadModel.State.FINISHED;
+                            ThreadCollection.Threads.Remove(Current);
+                            continue;
+                        }
+                    }
+                }
+                await Task.Delay(100);
+                lock (mutex)
+                {
+                    if (Current.ProcState != ThreadModel.State.BLOCKED)
+                    {
+                        Current.ProcState = ThreadModel.State.READY;
+                    }
+                }
+            }
+        }
 
+        private async Task BlockThread()
+        {
+            lock (mutex)
+            {
+                if (Current.ProcState == ThreadModel.State.RUNNING)
+                {
+                    Current.ProcState = ThreadModel.State.BLOCKED;
+                    ThreadCollection.Threads.Remove(Current);
+                    ThreadCollection.BlockedThreads.Add(Current);
+                }
+            }
+        }
+
+        private async Task RunRR()
+        {
+            
+        }
+
+        private async void BlockButton_Click(object sender, RoutedEventArgs e)
+        {
+            await BlockThread();
         }
     }
 }

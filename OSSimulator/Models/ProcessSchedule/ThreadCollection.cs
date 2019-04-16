@@ -1,52 +1,17 @@
-﻿using System.Collections.Concurrent;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using System.Collections.Generic;
 
 namespace OSSimulator.Models.ProcessSchedule
 {
-    public class ThreadCollection : INotifyPropertyChanged
+    public class ThreadCollection
     {
         public ThreadCollection()
         {
-            Threads = new BlockingCollection<ThreadModel>();
-            BlockedThreads = new BlockingCollection<ThreadModel>();
+            Threads = new List<ThreadModel>();
+            BlockedThreads = new List<ThreadModel>();
         }
 
-        private BlockingCollection<ThreadModel> threads;
+        public List<ThreadModel> Threads { get; set; }
 
-        public BlockingCollection<ThreadModel> Threads
-        {
-            get
-            {
-                return threads;
-            }
-            set
-            {
-                threads = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private BlockingCollection<ThreadModel> blockedThreads;
-
-        public BlockingCollection<ThreadModel> BlockedThreads
-        {
-            get
-            {
-                return blockedThreads;
-            }
-            set
-            {
-                blockedThreads = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string name = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
+        public List<ThreadModel> BlockedThreads { get; set; }
     }
 }
