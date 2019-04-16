@@ -33,25 +33,44 @@ namespace OSSimulator.Pages
             PrCk.IsChecked = true;
         }
 
-        private void Priority_Checked(object sender, RoutedEventArgs e)
+        private async Task Clear()
         {
-            IsPriority = true;
+            foreach (var thread in ThreadCollection.Threads)
+            {
+                thread.Value = 0;
+                thread.ProcState = ThreadModel.State.READY;
+                thread.Priority = thread.AllocPriority;
+            }
+            ThreadCollection.RunningThreads.AddRange(ThreadCollection.Threads);
+            ThreadCollection.BlockedThreads.Clear();
         }
 
-        private void RoundRobin_Checked(object sender, RoutedEventArgs e)
+        private async void Priority_Checked(object sender, RoutedEventArgs e)
+        {
+            IsPriority = true;
+            await Clear();
+        }
+
+        private async void RoundRobin_Checked(object sender, RoutedEventArgs e)
         {
             IsPriority = false;
+            await Clear();
         }
+
+        
 
         private async void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            ThreadCollection.Threads.Add(new ThreadModel
+            var thread = new ThreadModel
             {
                 Pid = Count++,
-                Priority = Random.Next(300),
-                Time = Random.Next(300),
+                AllocPriority = Random.Next(300),
+                AllocTime = Random.Next(300),
                 ProcState = ThreadModel.State.READY
-            });
+            };
+            thread.Priority = thread.AllocPriority;
+            ThreadCollection.RunningThreads.Add(thread);
+            ThreadCollection.Threads.Add(thread);
             ThreadsDataGrid.ItemsSource = null;
             ThreadsDataGrid.ItemsSource = ThreadCollection.Threads;
             ProgressBars.ItemsSource = null;
@@ -60,12 +79,10 @@ namespace OSSimulator.Pages
 
         private async void DelButton_Click(object sender, RoutedEventArgs e)
         {
-            var thread = ThreadCollection.Threads.FirstOrDefault();
-            if (thread != null)
-            {
-                ThreadCollection.Threads.Remove(thread);
-                ThreadCollection.BlockedThreads.Remove(thread);
-            }
+            var thread = ThreadCollection.RunningThreads.FirstOrDefault();
+            ThreadCollection.RunningThreads.Remove(thread);
+            ThreadCollection.BlockedThreads.Remove(thread);
+            ThreadCollection.Threads.Remove(thread);
             ThreadsDataGrid.ItemsSource = null;
             ThreadsDataGrid.ItemsSource = ThreadCollection.Threads;
             ProgressBars.ItemsSource = null;
@@ -83,10 +100,10 @@ namespace OSSimulator.Pages
             DelButton.IsEnabled = false;
             if (ThreadCollection.BlockedThreads.Count != 0)
             {
-                ThreadCollection.Threads.AddRange(ThreadCollection.BlockedThreads);
+                ThreadCollection.RunningThreads.AddRange(ThreadCollection.BlockedThreads);
                 ThreadCollection.BlockedThreads.Clear();
             }
-            foreach (var thread in ThreadCollection.Threads)
+            foreach (var thread in ThreadCollection.RunningThreads)
             {
                 thread.ProcState = ThreadModel.State.READY;
             }
@@ -105,12 +122,12 @@ namespace OSSimulator.Pages
 
         private async Task RunPrio()
         {
-            while (ThreadCollection.Threads.Count != 0)
+            while (ThreadCollection.RunningThreads.Count != 0)
             {
                 lock (mutex)
                 {
-                    ThreadCollection.Threads.Sort();
-                    Current = ThreadCollection.Threads.FirstOrDefault();
+                    ThreadCollection.RunningThreads.Sort();
+                    Current = ThreadCollection.RunningThreads.FirstOrDefault();
                     Current.ProcState = ThreadModel.State.RUNNING;
                 }
                 await Task.Delay(100);
@@ -122,10 +139,10 @@ namespace OSSimulator.Pages
                     }
                     Current.Priority -= 3;
                     Current.Value++;
-                    if (Current.Value == Current.Time)
+                    if (Current.Value == Current.AllocTime)
                     {
                         Current.ProcState = ThreadModel.State.FINISHED;
-                        ThreadCollection.Threads.Remove(Current);
+                        ThreadCollection.RunningThreads.Remove(Current);
                         continue;
                     }
                     Current.ProcState = ThreadModel.State.READY;
@@ -140,7 +157,7 @@ namespace OSSimulator.Pages
                 if (Current.ProcState == ThreadModel.State.RUNNING)
                 {
                     Current.ProcState = ThreadModel.State.BLOCKED;
-                    ThreadCollection.Threads.Remove(Current);
+                    ThreadCollection.RunningThreads.Remove(Current);
                     ThreadCollection.BlockedThreads.Add(Current);
                 }
             }
@@ -148,11 +165,11 @@ namespace OSSimulator.Pages
 
         private async Task RunRR()
         {
-            while (ThreadCollection.Threads.Count != 0)
+            while (ThreadCollection.RunningThreads.Count != 0)
             {
                 lock (mutex)
                 {
-                    Current = ThreadCollection.Threads.FirstOrDefault();
+                    Current = ThreadCollection.RunningThreads.FirstOrDefault();
                     Current.ProcState = ThreadModel.State.RUNNING;
                 }
                 await Task.Delay(100);
@@ -163,15 +180,15 @@ namespace OSSimulator.Pages
                         continue;
                     }
                     Current.Value++;
-                    ThreadCollection.Threads.Remove(Current);
-                    if (Current.Value == Current.Time)
+                    ThreadCollection.RunningThreads.Remove(Current);
+                    if (Current.Value == Current.AllocTime)
                     {
                         Current.ProcState = ThreadModel.State.FINISHED;
                         continue;
                     }
                     Current.ProcState = ThreadModel.State.READY;
-                    ThreadCollection.Threads.Remove(Current);
-                    ThreadCollection.Threads.Add(Current);
+                    ThreadCollection.RunningThreads.Remove(Current);
+                    ThreadCollection.RunningThreads.Add(Current);
                 }
             }
         }

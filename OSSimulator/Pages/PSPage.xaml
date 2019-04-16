@@ -31,7 +31,7 @@
                             <Grid Height="30" HorizontalAlignment="Stretch">
                                 <StackPanel HorizontalAlignment="Stretch">
                                     <TextBlock Text="{Binding Pid}" HorizontalAlignment="Stretch"/>
-                                    <ProgressBar Value="{Binding Value}" Maximum="{Binding Time}" HorizontalAlignment="Center" Width="700"/>
+                                    <ProgressBar Value="{Binding Value}" Maximum="{Binding AllocTime}" HorizontalAlignment="Center" Width="700"/>
                                 </StackPanel>
                             </Grid>
                         </DataTemplate>

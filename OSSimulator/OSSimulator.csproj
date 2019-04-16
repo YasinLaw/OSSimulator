@@ -124,6 +124,9 @@
     </Compile>
     <Compile Include="Models\ProcessSchedule\ThreadCollection.cs" />
     <Compile Include="Models\ProcessSchedule\ThreadModel.cs" />
+    <Compile Include="Models\VirtualMemoryPaging\PFrame.cs" />
+    <Compile Include="Models\VirtualMemoryPaging\VM.cs" />
+    <Compile Include="Models\VirtualMemoryPaging\VPage.cs" />
     <Compile Include="Pages\MMUPage.xaml.cs">
       <DependentUpon>MMUPage.xaml</DependentUpon>
     </Compile>

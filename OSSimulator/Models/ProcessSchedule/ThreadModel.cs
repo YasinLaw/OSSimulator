@@ -40,17 +40,32 @@ namespace OSSimulator.Models.ProcessSchedule
             }
         }
 
-        private long time;
+        private long allocPriority;
 
-        public long Time
+        public long AllocPriority
         {
             get
             {
-                return time;
+                return allocPriority;
             }
             set
             {
-                time = value;
+                allocPriority = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private long allocTime;
+
+        public long AllocTime
+        {
+            get
+            {
+                return allocTime;
+            }
+            set
+            {
+                allocTime = value;
                 OnPropertyChanged();
             }
         }

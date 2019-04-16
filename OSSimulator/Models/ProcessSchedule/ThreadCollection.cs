@@ -6,12 +6,17 @@ namespace OSSimulator.Models.ProcessSchedule
     {
         public ThreadCollection()
         {
-            Threads = new List<ThreadModel>();
+            RunningThreads = new List<ThreadModel>();
             BlockedThreads = new List<ThreadModel>();
+            Threads = new List<ThreadModel>();
         }
+
+        public List<ThreadModel> RunningThreads { get; set; }
+
+        public List<ThreadModel> BlockedThreads { get; set; }
 
         public List<ThreadModel> Threads { get; set; }
 
-        public List<ThreadModel> BlockedThreads { get; set; }
+
     }
 }
