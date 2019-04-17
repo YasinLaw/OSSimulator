@@ -12,38 +12,21 @@ namespace OSSimulator.Models.VirtualMemoryPaging
     {
         public VPage()
         {
-            Time = 0;
-            isEntered = false;
         }
 
         public int Id { get; set; }
 
-        private int time;
+        private string hex;
 
-        public int Time
+        public string Hex
         {
             get
             {
-                return time;
+                return hex;
             }
             set
             {
-                time = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private bool isEntered;
-
-        public bool IsEntered
-        {
-            get
-            {
-                return isEntered;
-            }
-            set
-            {
-                isEntered = value;
+                hex = value;
                 OnPropertyChanged();
             }
         }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OSSimulator.Models.VirtualMemoryPaging
 {
-    public class PFrame : INotifyPropertyChanged
+    public class PFrame : INotifyPropertyChanged, IComparable<PFrame>
     {
         public PFrame()
         {
@@ -39,6 +39,11 @@ namespace OSSimulator.Models.VirtualMemoryPaging
         public void OnPropertyChanged([CallerMemberName]string name = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public int CompareTo(PFrame other)
+        {
+            return other.Occupied.CompareTo(Occupied);
         }
     }
 }

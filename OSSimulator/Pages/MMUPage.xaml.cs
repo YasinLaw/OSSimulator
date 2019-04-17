@@ -30,6 +30,10 @@ namespace OSSimulator.Pages
 
         public int FrameCount { get; set; } = 0;
 
+        public decimal Count { get; set; } = 0;
+
+        public decimal Shot { get; set; } = 0;
+
         public int Mode { get; set; }
 
         public List<int> Sequence { get; set; }
@@ -66,7 +70,7 @@ namespace OSSimulator.Pages
         {
             await AddPage();
         }
-        
+
         private async Task AddPage()
         {
             if (PageCount >= 10)
@@ -75,7 +79,8 @@ namespace OSSimulator.Pages
             }
             VM.VPages.Add(new VPage
             {
-                Id = PageCount++
+                Id = PageCount++,
+                Hex = string.Empty 
             });
             PagesGridView.ItemsSource = null;
             PagesGridView.ItemsSource = VM.VPages;
@@ -107,22 +112,40 @@ namespace OSSimulator.Pages
             }
             foreach (var page in VM.VPages)
             {
-                page.Time = 0;
+                page.Hex = string.Empty;
             }
+            Count = 0;
+            Shot = 0;
+            Rate.Text = string.Empty;
+            Rate.Text += "0%";
         }
 
         private async void RunButton_Click(object sender, RoutedEventArgs e)
         {
+            Count = -FrameCount;
             RunButton.IsEnabled = false;
+            AddFrameButton.IsEnabled = false;
+            AddPageButton.IsEnabled = false;
             if (Mode == 0)
             {
                 await RunFIFO();
             }
+            if (Mode == 1)
+            {
+                await RunLRU();
+            }
+            if (Mode == 2)
+            {
+                await RunOPT();
+            }
             RunButton.IsEnabled = true;
+            AddFrameButton.IsEnabled = true;
+            AddPageButton.IsEnabled = true;
         }
 
         private async Task Parse()
         {
+            Sequence.Clear();
             foreach (var s in PagingSequence.Text)
             {
                 if (int.TryParse(s.ToString(), out int result))
@@ -139,32 +162,129 @@ namespace OSSimulator.Pages
             }
         }
 
+        private async Task RefreshRate()
+        {
+            if (Count < 1)
+            {
+                return;
+            }
+            Rate.Text = string.Empty;
+            decimal result =  Math.Round(Shot / Count * 100);
+            Rate.Text += result.ToString() + "%";
+        }
+
         private async Task RunFIFO()
         {
-            int count = 0;
-            int shot = 0;
             await Parse();
             List<PFrame> frames = new List<PFrame>(VM.PFrames);
             foreach (var s in Sequence)
             {
-                count++;
+                Count++;
                 var page = VM.VPages.FirstOrDefault(x => x.Id == s);
-                if (frames.FirstOrDefault(x=>x.VPage == page) != null)
+                var frame = frames.FirstOrDefault(x => x.VPage == page);
+                if (frame != null)
                 {
-                    var frame = frames.FirstOrDefault(x=>x.VPage == page);
+                    Shot++;
+                }
+                else
+                {
+                    frame = frames.FirstOrDefault();
+                    if (frame.VPage != null)
+                    {
+                        frame.VPage.Hex = string.Empty;
+                    }
+                    frame.VPage = page;
+                    page.Hex = string.Format("0x100{0:X}", frame.Id);
                     frames.Remove(frame);
                     frames.Add(frame);
-                    shot++;
+                }
+                await RefreshRate();
+                await Task.Delay(1000);
+            }
+        }
+
+        private async Task RunLRU()
+        {
+            await Parse();
+            List<PFrame> frames = new List<PFrame>(VM.PFrames);
+            foreach (var s in Sequence)
+            {
+                Count++;
+                var page = VM.VPages.FirstOrDefault(x => x.Id == s);
+                if (frames.FirstOrDefault(x => x.VPage == page) != null)
+                {
+                    var frame = frames.FirstOrDefault(x => x.VPage == page);
+                    frames.Remove(frame);
+                    frames.Add(frame);
+                    Shot++;
                 }
                 else
                 {
                     var frame = frames.FirstOrDefault();
                     frames.Remove(frame);
+                    if (frame.VPage != null)
+                    {
+                        frame.VPage.Hex = string.Empty;
+                    }
                     frame.VPage = page;
+                    page.Hex = string.Format("0x100{0:X}", frame.Id);
                     frames.Add(frame);
                 }
-                Rate.Text = string.Empty;
-                Rate.Text += ((int)(shot / (double)count * 100)).ToString() + "%";
+                await RefreshRate();
+                await Task.Delay(1000);
+            }
+        }
+
+        private async Task RunOPT()
+        {
+            await Parse();
+            List<PFrame> frames = new List<PFrame>(VM.PFrames);
+            List<int> sequence = new List<int>(Sequence);
+            foreach (var s in Sequence)
+            {
+                Count++;
+                sequence.RemoveAt(0);
+                var page = VM.VPages.FirstOrDefault(x => x.Id == s);
+                if (frames.FirstOrDefault(x => x.VPage == page) != null)
+                {
+                    Shot++;
+                }
+                else
+                {
+                    var frame = frames.FirstOrDefault(x => x.VPage == null);
+                    if (frame != null)
+                    {
+                        frame.VPage = page;
+                        page.Hex = string.Format("0x100{0:X}", frame.Id);
+                    }
+                    else
+                    {
+                        // 帧满时，需要置换在未来序列中出现最少的页
+                        List<int> ls = new List<int>();
+                        foreach (var f in frames)
+                        {
+                            ls.Add(f.VPage.Id);
+                        }
+                        List<int> frequency = new List<int>();
+                        frequency.AddRange(ls);
+                        foreach (var seq in sequence)
+                        {
+                            if (ls.Contains(seq))
+                            {
+                                frequency.Add(seq);
+                            }
+                        }
+                        var pageId = frequency.GroupBy(x => x).OrderBy(grp => grp.Count()).FirstOrDefault().Key;
+                        frame = frames.FirstOrDefault(x => x.VPage.Id == pageId);
+                        if (frame.VPage != null)
+                        {
+                            frame.VPage.Hex = string.Empty;
+                        }
+                        frame.VPage = page;
+                        page.Hex = string.Format("0x100{0:X}", frame.Id);
+                    }
+                }
+                await RefreshRate();
                 await Task.Delay(1000);
             }
         }

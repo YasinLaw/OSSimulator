@@ -26,13 +26,13 @@
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0">
                     <ListView>
-                        <GridView x:Name="FramesGridView" IsItemClickEnabled="False" ItemsSource="{x:Bind VM.PFrames}" Header="Frame" FontSize="32" FontWeight="Bold">
+                        <GridView x:Name="FramesGridView" IsItemClickEnabled="False" ItemsSource="{x:Bind VM.PFrames}" Header="Frame" FontSize="32">
                             <GridView.ItemTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Width="200">
-                                        <TextBlock Text="{Binding Id}" FontSize="20"/>
-                                        <TextBlock Text="Running Page:"/>
-                                        <TextBlock Text="{Binding VPage.Id}" Foreground="Red"/>
+                                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Width="200" BorderBrush="LightGray" BorderThickness="2">
+                                        <TextBlock Text="{Binding Id}" FontSize="20" Padding="5"/>
+                                        <TextBlock Text="Running Page:" Padding="5"/>
+                                        <TextBlock Text="{Binding VPage.Id}" Foreground="Red" Padding="5"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </GridView.ItemTemplate>
@@ -41,11 +41,13 @@
                 </Grid>
                 <Grid Grid.Column="2">
                     <ListView>
-                        <GridView x:Name="PagesGridView" IsItemClickEnabled="False" ItemsSource="{x:Bind VM.VPages}" Header="Page" FontSize="32" FontWeight="Bold">
+                        <GridView x:Name="PagesGridView" IsItemClickEnabled="False" ItemsSource="{x:Bind VM.VPages}" Header="Page" FontSize="32">
                             <GridView.ItemTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Width="200">
-                                        <TextBlock Text="{Binding Id}" FontSize="20"/>
+                                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Width="200" BorderBrush="LightGray" BorderThickness="2">
+                                        <TextBlock Text="{Binding Id}" FontSize="20" Padding="5"/>
+                                        <TextBlock Text="Physical Address:" Padding="5"/>
+                                        <TextBlock Text="{Binding Hex}" Padding="5" Foreground="Red"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </GridView.ItemTemplate>
@@ -55,7 +57,7 @@
             </Grid>
             <Grid Grid.Row="1">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <TextBox x:Name="PagingSequence" Margin="10" PlaceholderText="需求页序列" TextWrapping="NoWrap" HorizontalAlignment="Center" VerticalAlignment="Center" Width="500"/>
+                    <TextBox x:Name="PagingSequence" Margin="10" PlaceholderText="页序列前 FrameCount 位为预置值" TextWrapping="NoWrap" HorizontalAlignment="Center" VerticalAlignment="Center" Width="500"/>
                     <Button x:Name="RunButton" Content="Run" Click="RunButton_Click"/>
                 </StackPanel>
                  </Grid>
@@ -69,8 +71,8 @@
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <TextBlock Text="命中率" HorizontalAlignment="Center" Margin="10"/>
                     <TextBlock x:Name="Rate" Text="0%" HorizontalAlignment="Center" FontSize="48" Margin="10"/>
-                    <Button Margin="10" x:Name="AddFrameButton" Content="Add Frame" Width="100" Click="AddFrameButton_Click"/>
-                    <Button Margin="10" x:Name="AddPageButton" Content="Add Page" Width="100" Click="AddPageButton_Click"/>
+                    <Button Margin="10" x:Name="AddFrameButton" HorizontalAlignment="Center" Content="Add Frame" Width="100" Click="AddFrameButton_Click"/>
+                    <Button Margin="10" x:Name="AddPageButton" HorizontalAlignment="Center" Content="Add Page" Width="100" Click="AddPageButton_Click"/>
                 </StackPanel>
             </Grid>
             <Grid Grid.Row="1">
