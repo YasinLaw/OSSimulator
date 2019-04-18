@@ -30,8 +30,11 @@
                         <DataTemplate>
                             <Grid Height="30" HorizontalAlignment="Stretch">
                                 <StackPanel HorizontalAlignment="Stretch">
-                                    <TextBlock Text="{Binding Pid}" HorizontalAlignment="Stretch"/>
-                                    <ProgressBar Value="{Binding Value}" Maximum="{Binding AllocTime}" HorizontalAlignment="Center" Width="700"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Pid}" HorizontalAlignment="Stretch"/>
+                                        <ProgressRing IsActive="{Binding IsRunning}" Padding="5"/>
+                                    </StackPanel>
+                                    <ProgressBar Value="{Binding Value}" Maximum="100" HorizontalAlignment="Center" Width="700"/>
                                 </StackPanel>
                             </Grid>
                         </DataTemplate>
@@ -52,6 +55,7 @@
             </Grid>
             <Grid Grid.Row="0">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical">
+                    <TextBlock x:Name="text" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap"/>
                     <StackPanel Orientation="Horizontal" Height="100">
                         <Button x:Name="AddButton" Background="{ThemeResource ButtonBackgroundThemeBrush}" Content="ADD" Click="AddButton_Click"/>
                         <Button x:Name="DelButton" Background="{ThemeResource ButtonBackgroundThemeBrush}" Content="DEL" Click="DelButton_Click"/>
@@ -60,7 +64,8 @@
                         <Button x:Name="RunButton" Background="{ThemeResource ButtonBackgroundThemeBrush}" Content="RUN" Click="RunButton_Click"/>
                         <Button x:Name="BlockButton" Background="{ThemeResource ButtonBackgroundThemeBrush}" Content="BLK" Click="BlockButton_Click"/>
                     </StackPanel>
-                    </StackPanel>
+                    <Button x:Name="ClearCacheButton" Content="Clear Cache" HorizontalAlignment="Center" Click="ClearCache_Click"/>
+                </StackPanel>
             </Grid>
         </Grid>
     </Grid>
