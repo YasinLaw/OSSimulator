@@ -12,7 +12,8 @@
         <NavigationView x:Name="nvview" PaneTitle="OS Simulator" ItemInvoked="Nvview_ItemInvoked" SelectionFollowsFocus="Enabled" AlwaysShowHeader="False" IsBackButtonVisible="Collapsed">
             <NavigationView.MenuItems>
                 <NavigationViewItem x:Name="PS" Icon="Play" Content="进程调度"/>
-                <NavigationViewItem x:Name="MMU" Icon="Save" Content="内存管理"/>
+                <NavigationViewItem x:Name="MMRALLOC" Icon="Save" Content="内存分配"/>
+                <NavigationViewItem x:Name="MMU" Icon="Shuffle" Content="内存换页"/>
             </NavigationView.MenuItems>
             <NavigationView.PaneFooter>
                 <StackPanel>

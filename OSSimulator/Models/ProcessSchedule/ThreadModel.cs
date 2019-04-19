@@ -100,17 +100,17 @@ namespace OSSimulator.Models.ProcessSchedule
             }
         }
 
-        private bool isRunning = false;
+        private string color = "Black";
 
-        public bool IsRunning
+        public string Color
         {
             get
             {
-                return isRunning;
+                return color;
             }
             set
             {
-                isRunning = value;
+                color = value;
                 OnPropertyChanged();
             }
         }

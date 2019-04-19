@@ -4,8 +4,6 @@ using Windows.UI.Xaml.Controls;
 using OSSimulator.Models.ProcessSchedule;
 using System.Linq;
 using System.Threading.Tasks;
-using System.IO;
-using System.Text;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“空白页”项模板
 
@@ -16,12 +14,6 @@ namespace OSSimulator.Pages
     /// </summary>
     public sealed partial class PSPage : Page
     {
-        Windows.Storage.StorageFolder folder = Windows.Storage.ApplicationData.Current.LocalFolder;
-
-        Windows.Storage.StorageFile file;
-
-        public string Log { get; set; }
-
         public readonly object mutex = new object();
 
         public ThreadCollection ThreadCollection { get; set; }
@@ -103,7 +95,6 @@ namespace OSSimulator.Pages
 
         private async void RunButton_Click(object sender, RoutedEventArgs e)
         {
-            file = await folder.CreateFileAsync("log.txt", Windows.Storage.CreationCollisionOption.OpenIfExists);
             RunButton.IsEnabled = false;
             AddButton.IsEnabled = false;
             DelButton.IsEnabled = false;
@@ -115,7 +106,6 @@ namespace OSSimulator.Pages
             foreach (var thread in ThreadCollection.RunningThreads)
             {
                 thread.ProcState = ThreadModel.State.READY;
-                thread.IsRunning = true;
             }
             if (IsPriority)
             {
@@ -132,7 +122,6 @@ namespace OSSimulator.Pages
 
         private async Task RunPrio()
         {
-            await LogOnce();
             while (ThreadCollection.RunningThreads.Count != 0)
             {
                 lock (mutex)
@@ -140,7 +129,6 @@ namespace OSSimulator.Pages
                     ThreadCollection.RunningThreads.Sort();
                     Current = ThreadCollection.RunningThreads.FirstOrDefault();
                     Current.ProcState = ThreadModel.State.RUNNING;
-                    Current.IsRunning = true;
                 }
                 await Task.Delay(100);
                 lock (mutex)
@@ -154,16 +142,14 @@ namespace OSSimulator.Pages
                     if (Current.Value == Current.AllocTime)
                     {
                         Current.ProcState = ThreadModel.State.FINISHED;
+                        Current.Color = "Red";
                         ThreadCollection.RunningThreads.Remove(Current);
-                        Current.IsRunning = false;
                         var item = ProgressBars.Items;
                         continue;
                     }
                     Current.ProcState = ThreadModel.State.READY;
                 }
-                await LogOnce();
             }
-            await Logging();
         }
 
         private async Task BlockThread()
@@ -175,21 +161,18 @@ namespace OSSimulator.Pages
                     Current.ProcState = ThreadModel.State.BLOCKED;
                     ThreadCollection.RunningThreads.Remove(Current);
                     ThreadCollection.BlockedThreads.Add(Current);
-                    Current.IsRunning = false;
                 }
             }
         }
 
         private async Task RunRR()
         {
-            await LogOnce();
             while (ThreadCollection.RunningThreads.Count != 0)
             {
                 lock (mutex)
                 {
                     Current = ThreadCollection.RunningThreads.FirstOrDefault();
                     Current.ProcState = ThreadModel.State.RUNNING;
-                    Current.IsRunning = true;
                 }
                 await Task.Delay(100);
                 lock (mutex)
@@ -203,56 +186,18 @@ namespace OSSimulator.Pages
                     if (Current.Value == Current.AllocTime)
                     {
                         Current.ProcState = ThreadModel.State.FINISHED;
-                        Current.IsRunning = false;
+                        Current.Color = "Red";
                         continue;
                     }
                     Current.ProcState = ThreadModel.State.READY;
                     ThreadCollection.RunningThreads.Add(Current);
                 }
-                await LogOnce();
             }
-            await Logging();
         }
 
         private async void BlockButton_Click(object sender, RoutedEventArgs e)
         {
             await BlockThread();
-        }
-
-        private async Task ClearCache()
-        {
-            Windows.Storage.StorageFile file = await folder.CreateFileAsync("log.txt", Windows.Storage.CreationCollisionOption.OpenIfExists);
-            if (file.IsAvailable)
-            {
-                await file.DeleteAsync();
-            }
-            Log = string.Empty;
-        }
-
-        private async Task Logging()
-        {
-            if (file.IsAvailable)
-            {
-                await Windows.Storage.FileIO.AppendTextAsync(file, Log);
-            }
-            else
-            {
-                text.Text = "Wrong";
-            }
-        }
-
-        private async Task LogOnce()
-        {
-            foreach (var t in ThreadCollection.Threads)
-            {
-                Log += $"Pid：{t.Pid}\t\t分配优先值：{t.Priority}\t\t优先值：{t.Priority}\t\t分配时间：{t.AllocTime}\t\t运行时间：{t.Value}\t\t进程状态：{t.ProcState}\n";
-            }
-            Log += "--------------------------------------------------------------------------------------------------------------------\n";
-        }
-
-        private async void ClearCache_Click(object sender, RoutedEventArgs e)
-        {
-            await ClearCache();
         }
     }
 }

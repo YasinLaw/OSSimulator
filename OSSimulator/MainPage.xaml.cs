@@ -58,6 +58,10 @@ namespace OSSimulator
             {
                 pageType = typeof(MMUPage);
             }
+            else if (itemContainer == MMRALLOC)
+            {
+                pageType = typeof(MemoryAllocationPage);
+            }
             contentFrame.NavigateToType(pageType, null, options);
         }
     }
