@@ -14,7 +14,11 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0" Margin="10">
-            <GridView x:Name="MemoryGrid" ItemsSource="{x:Bind Memories}" IsItemClickEnabled="False">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="5*"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <GridView x:Name="MemoryGrid" Grid.Row="0" ItemsSource="{x:Bind Memories}" IsItemClickEnabled="False">
                 <GridView.ItemTemplate>
                     <DataTemplate>
                         <Grid Background="{Binding Color}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="Yellow" BorderThickness="1" Height="100" Width="100">
@@ -23,6 +27,9 @@
                     </DataTemplate>
                 </GridView.ItemTemplate>
             </GridView>
+            <Grid Grid.Row="1">
+                <TextBlock x:Name="Op" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
         </Grid>
         <Grid Grid.Column="1">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">

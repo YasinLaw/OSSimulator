@@ -145,13 +145,18 @@ namespace OSSimulator.Pages
 
         private async Task Swap(DoTask task)
         {
+            string op = string.Empty;
             var index = -1;
+            op += "Removed: ";
             while (index == -1)
             {
                 var tuple = await FindFreeUnits(task);
                 await RemoveTask(tuple.Item2);
+                op += tuple.Item2 == null ? "null " : tuple.Item2.Id.ToString() + " ";
                 index = tuple.Item1;
             }
+            op += "Launched: " + task.Id;
+            Op.Text = op;
            await LaunchTask(task, index);
         }
 
