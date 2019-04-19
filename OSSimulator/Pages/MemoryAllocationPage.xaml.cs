@@ -267,6 +267,7 @@ namespace OSSimulator.Pages
                 ls.Add(res);
             }
             Tasks.Text = string.Empty;
+            TasksInfo = string.Empty;
             for (int i = 0; i < 6; i++)
             {
                 DoTasks[i].Length = ls[i];
