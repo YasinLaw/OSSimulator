@@ -42,7 +42,7 @@
                     <Button Content="RUN TASK 5" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" Click="Button_Click_5"/>
                 </StackPanel>
                 <TextBlock x:Name="Tasks" Margin="5" TextWrapping="Wrap"/>
-                <TextBox x:Name="AllocMemory" Margin="5" AutomationProperties.Name="multi-line TextBox" TextWrapping="Wrap"/>
+                <TextBox x:Name="AllocMemory" Margin="5" PlaceholderText="输入6个数字，以空格分隔" AutomationProperties.Name="multi-line TextBox" TextWrapping="Wrap"/>
                 <Button Margin="5" Content="Parse" HorizontalAlignment="Center" VerticalAlignment="Center" Click="Button_Click_6" Width="{Binding ActualWidth, ElementName=AllocMemory, Mode=OneWay}"/>
             </StackPanel>
         </Grid>

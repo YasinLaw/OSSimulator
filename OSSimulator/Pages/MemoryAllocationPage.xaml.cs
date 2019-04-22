@@ -263,15 +263,33 @@ namespace OSSimulator.Pages
             List<int> ls = new List<int>();
             for (int i = 0; i < 6; i++)
             {
-                int.TryParse(lens[i], out int res);
-                ls.Add(res);
+                try
+                {
+                    int.TryParse(lens[i], out int res);
+                    ls.Add(res);
+                }
+                catch (Exception ex)
+                {
+                    Tasks.Text = ex.Message;
+                }
+                
             }
             Tasks.Text = string.Empty;
             TasksInfo = string.Empty;
             for (int i = 0; i < 6; i++)
             {
-                DoTasks[i].Length = ls[i];
-                TasksInfo += $"TaskId: {DoTasks[i].Id}\tLength: {DoTasks[i].Length}\n";
+                try
+                {
+                    DoTasks[i].Length = ls[i];
+                }
+                catch (Exception ex)
+                {
+                    Tasks.Text = ex.Message;
+                }
+                finally
+                {
+                    TasksInfo += $"TaskId: {DoTasks[i].Id}\tLength: {DoTasks[i].Length}\n";
+                }
             }
             Tasks.Text = TasksInfo;
         }
