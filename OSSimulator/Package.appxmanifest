@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="10949YangxinLuo.OSSimulator" Publisher="CN=1F7FF574-5775-43E3-9E99-13D273DDB0A9" Version="1.0.0.0" />
+  <Identity Name="10949YangxinLuo.OSSimulator" Publisher="CN=1F7FF574-5775-43E3-9E99-13D273DDB0A9" Version="1.0.2.0" />
   <mp:PhoneIdentity PhoneProductId="83e991c7-ecfd-4539-b30d-a71d33c3195a" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>OS Simulator</DisplayName>

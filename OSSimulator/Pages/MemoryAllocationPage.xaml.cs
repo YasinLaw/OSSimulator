@@ -266,7 +266,14 @@ namespace OSSimulator.Pages
                 try
                 {
                     int.TryParse(lens[i], out int res);
-                    ls.Add(res);
+                    if (res > 0 && res < 33)
+                    {
+                        ls.Add(res);
+                    }
+                    else
+                    {
+                        ls.Add(DoTasks[i].Length);
+                    }
                 }
                 catch (Exception ex)
                 {
